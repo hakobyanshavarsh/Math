@@ -60,3 +60,13 @@ code{background:var(--bg);padding:.1em .4em;border-radius:6px;border:1px solid v
 .auth .card input{background:#eaf0ff;color:#111;border-color:#2b3354}
 .auth .primary{width:auto;justify-self:start;padding:.7rem 1.4rem}
 .auth .muted{color:#9aa4c7}
+
+/* Home cards and extra pages */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem;margin-top:1rem}
+.topic{display:grid;gap:.3rem;text-align:left;padding:1.1rem;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--shadow)}
+.topic b{font-size:1.02rem}.topic span{color:var(--muted);font-size:.9rem}
+.topic:hover{border-color:var(--brand)}
+.svgbox{width:100%;height:auto;max-height:430px;touch-action:none;color:var(--ink);margin-top:.8rem}
+.row3{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.row3 button{border:1px solid var(--line)}
+.top nav button{padding:.45rem .8rem}

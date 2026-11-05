@@ -30,8 +30,13 @@
   <header class="top">
     <b class="logo">Math<span>Vision</span></b>
     <nav>
-      <button data-tab="theory" class="on">Theory</button>
+      <button data-tab="home" class="on">Home</button>
+      <button data-tab="theory">Theory</button>
       <button data-tab="viz">Visualizer</button>
+      <button data-tab="polar">Polar</button>
+      <button data-tab="riemann">Riemann sums</button>
+      <button data-tab="graphs">Graphs</button>
+      <button data-tab="geo">Geometry</button>
       <button data-tab="ex">Exercises</button>
       <button data-tab="prog">Progress</button>
     </nav>
@@ -40,7 +45,80 @@
   </header>
 
   <main>
-    <section id="tab-theory" class="tab">
+    <section id="tab-home" class="tab">
+      <h2>Welcome to MathVision</h2>
+      <p class="muted">Pick a topic and explore it visually. Everything here is interactive.</p>
+      <div class="cards">
+        <button class="topic" data-go="theory"><b>∬ Double integrals: theory</b><span>Volume under a surface, how to set limits</span></button>
+        <button class="topic" data-go="viz"><b>Double integral visualizer</b><span>3D surface, region and sliding slice</span></button>
+        <button class="topic" data-go="polar"><b>Polar coordinates</b><span>Integrate over circles, cardioids, rings</span></button>
+        <button class="topic" data-go="riemann"><b>Riemann sums</b><span>Watch rectangles approach the area</span></button>
+        <button class="topic" data-go="graphs"><b>Graph algorithms</b><span>BFS and DFS, step by step</span></button>
+        <button class="topic" data-go="geo"><b>Geometry</b><span>Drag a triangle, see what stays constant</span></button>
+        <button class="topic" data-go="ex"><b>Exercises</b><span>Auto-checked, with hints</span></button>
+        <button class="topic" data-go="prog"><b>My progress</b><span>See what you have solved</span></button>
+      </div>
+    </section>
+
+    <section id="tab-polar" class="tab" hidden>
+      <h2>Polar coordinates</h2>
+      <p>In polar coordinates the area element is <code>dA = r dr dθ</code>. The extra <b>r</b> is the key. Region: <code>α ≤ θ ≤ β</code>, <code>r₁(θ) ≤ r ≤ r₂(θ)</code>. Use <code>t</code> for θ.</p>
+      <div class="vizgrid">
+        <div class="panel controls">
+          <label>f(x, y) <input id="pf" value="1"></label>
+          <div class="row"><label>θ from <input id="pa" value="0"></label><label>θ to <input id="pb" value="2*pi"></label></div>
+          <label>r lower r₁(t) <input id="pr1" value="0"></label>
+          <label>r upper r₂(t) <input id="pr2" value="1+cos(t)"></label>
+          <label>Ray position <input id="pt" type="range" min="0" max="1" step="0.01" value="0.3"></label>
+          <button id="pdraw" class="primary">Draw</button>
+          <div id="resP" class="result"></div>
+          <p class="muted small">Try r₂ = <code>2</code> (disk), <code>2*cos(t)</code> with θ from -pi/2 to pi/2, or r₁ = <code>1</code>, r₂ = <code>2</code> (ring). With f = 1 the result is the area.</p>
+        </div>
+        <div class="panel"><div id="plotP" class="plot"></div></div>
+      </div>
+    </section>
+
+    <section id="tab-riemann" class="tab" hidden>
+      <h2>Riemann sums</h2>
+      <p>The area under a curve is approximated by thin rectangles. More rectangles, better approximation.</p>
+      <div class="vizgrid">
+        <div class="panel controls">
+          <label>f(x) <input id="rf" value="sin(x) + 2"></label>
+          <div class="row"><label>a <input id="ra" value="0"></label><label>b <input id="rb" value="pi"></label></div>
+          <label>Rectangles: <b id="rn_val">8</b> <input id="rn" type="range" min="1" max="100" step="1" value="8"></label>
+          <label>Sample point
+            <select id="rm"><option value="left">Left</option><option value="mid">Midpoint</option><option value="right">Right</option></select>
+          </label>
+          <div id="resR" class="result"></div>
+        </div>
+        <div class="panel"><div id="plotR" class="plot"></div></div>
+      </div>
+    </section>
+
+    <section id="tab-graphs" class="tab" hidden>
+      <h2>Graph algorithms</h2>
+      <p>Red is the current node, green is visited, orange is waiting in the queue (BFS) or stack (DFS).</p>
+      <div class="panel">
+        <div class="row3">
+          <select id="galg" style="width:auto"><option value="bfs">BFS (queue)</option><option value="dfs">DFS (stack)</option></select>
+          <select id="gstart" style="width:auto"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+          <button id="gstep">Step</button><button id="gplay">Play</button><button id="greset">Reset</button>
+        </div>
+        <svg id="graphSvg" class="svgbox" viewBox="0 0 500 340"></svg>
+        <div id="resGr" class="result"></div>
+      </div>
+    </section>
+
+    <section id="tab-geo" class="tab" hidden>
+      <h2>Geometry</h2>
+      <p>Drag the red points. The triangle changes, but the sum of its angles does not.</p>
+      <div class="panel">
+        <svg id="geoSvg" class="svgbox" viewBox="0 0 500 340"></svg>
+        <div id="resG" class="result"></div>
+      </div>
+    </section>
+
+    <section id="tab-theory" class="tab" hidden>
       <h2>Double integrals</h2>
       <p>The double integral <code>∬<sub>D</sub> f(x,y) dA</code> equals the <b>volume</b> under the surface <code>z = f(x,y)</code> and above the region <code>D</code>.</p>
       <h3>How to compute it</h3>
@@ -104,6 +182,7 @@
 <script src="auth.js"></script>
 <script src="visualizer.js"></script>
 <script src="exercises.js"></script>
+<script src="pages.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

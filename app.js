@@ -22,6 +22,7 @@ async function showApp(user) {
   $("userEmail").textContent = user.email;
   await Exercises.init(user);
   Viz.init();
+  openTab("home");
 }
 
 function openTab(name) {
@@ -29,6 +30,10 @@ function openTab(name) {
   document.querySelectorAll(".top nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
   if (name === "viz") Viz.draw();
   if (name === "prog") Exercises.renderProgress();
+  if (name === "polar") Polar.draw();
+  if (name === "riemann") Riemann.draw();
+  if (name === "graphs") Graphs.render();
+  if (name === "geo") Geo.render();
 }
 
 async function submitAuth() {
@@ -65,6 +70,7 @@ async function submitAuth() {
   $("logout").onclick = async () => { await Auth.signOut(); location.reload(); };
   document.querySelectorAll(".top nav button").forEach(b => b.onclick = () => openTab(b.dataset.tab));
 
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => openTab(b.dataset.go));
   const h = new URLSearchParams(location.hash.slice(1));
   const recovering = h.get("type") === "recovery";
   if (recovering) mode = "newpw";
