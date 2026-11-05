@@ -28,30 +28,15 @@ const Auth = {
     if (this.sb) await this.sb.auth.signOut(); else localStorage.removeItem("mv_user");
   },
 
-  async sendCode(email) {
-    if (this.sb) {
-      const { error } = await this.sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-      if (error) throw error;
-    }
+  async resetPassword(email) {
+    if (!this.sb) throw new Error("Password reset needs Supabase (not available in demo mode).");
+    const { error } = await this.sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if (error) throw error;
   },
-  async verifyCode(email, token) {
-    if (this.sb) {
-      const { data, error } = await this.sb.auth.verifyOtp({ email, token, type: "email" });
-      if (error) throw error;
-      return data.user;
-    }
-    if (token !== "123456") throw new Error("Demo mode: use code 123456");
-    const u = { id: email, email }; localStorage.setItem("mv_user", JSON.stringify(u)); return u;
-  },
-  hasPassword(u) { return !!((u.user_metadata && u.user_metadata.has_password) || u.has_password); },
-  async setPassword(password) {
-    if (this.sb) {
-      const { data, error } = await this.sb.auth.updateUser({ password, data: { has_password: true } });
-      if (error) throw error;
-      return data.user;
-    }
-    const u = JSON.parse(localStorage.getItem("mv_user")); u.has_password = true;
-    localStorage.setItem("mv_user", JSON.stringify(u)); return u;
+  async updatePassword(password) {
+    const { data, error } = await this.sb.auth.updateUser({ password });
+    if (error) throw error;
+    return data.user;
   },
 
   async saveProgress(user, exerciseId, correct) {

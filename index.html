@@ -10,20 +10,17 @@
 
 <section id="auth" class="auth">
   <div class="card">
-    <h1>Math<span>Vision</span></h1>
-    <p class="muted">See the math, not just the formulas.</p>
-    <div class="seg" id="seg">
-      <button id="modeCode" class="on">Email code</button>
-      <button id="modePw">Password</button>
+    <div class="brand">Math<span>Vision</span></div>
+    <h2 id="authTitle">Log in</h2>
+    <div class="tabs" id="tabs">
+      <button id="tabLogin" class="on">Log in</button>
+      <button id="tabSignup">Sign up</button>
+      <button id="tabReset">Reset password</button>
     </div>
-    <p id="authHint" class="muted small"></p>
-    <input id="email" type="email" placeholder="Email" autocomplete="email">
-    <input id="password" type="password" placeholder="Password" autocomplete="current-password" hidden>
-    <input id="code" inputmode="numeric" maxlength="10" placeholder="Code from your email" autocomplete="one-time-code" hidden>
-    <input id="newPassword" type="password" placeholder="Create a password (min. 6 characters)" autocomplete="new-password" hidden>
-    <button id="authBtn" class="primary">Send code</button>
-    <button id="skipBtn" class="ghost" hidden>Skip for now</button>
-    <button id="backBtn" class="ghost" hidden>Use a different email</button>
+    <label id="lblEmail">Email<input id="email" type="email" autocomplete="email"></label>
+    <label id="lblPw">Password<input id="password" type="password" autocomplete="current-password"></label>
+    <label id="lblPw2" hidden>Confirm password<input id="password2" type="password" autocomplete="new-password"></label>
+    <button id="authBtn" class="primary">Log in</button>
     <p id="authMsg" class="msg"></p>
     <p id="demoNote" class="muted small" hidden>Demo mode: Supabase is not connected yet, data is stored in your browser.</p>
   </div>

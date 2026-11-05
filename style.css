@@ -46,3 +46,17 @@ code{background:var(--bg);padding:.1em .4em;border-radius:6px;border:1px solid v
 
 .card .ghost{width:100%}
 .card input[hidden],.card button[hidden]{display:none}
+
+/* Auth screen (dark card) */
+.auth{background:#141824}
+.auth .card{background:#1c2236;border:1px solid #2b3354;color:#e8ecf7;max-width:440px;gap:1rem;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.auth .brand{font-weight:700;font-size:1rem;letter-spacing:.02em;text-align:left}
+.auth .brand span{color:#a5b4fc}
+.auth h2{margin:0;font-size:2rem;text-align:left}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+.tabs button{background:#1c2236;border:1px solid #2b3354;color:#e8ecf7;border-radius:12px;padding:.6rem 1rem}
+.tabs button.on{border-color:#7dd3fc;color:#7dd3fc}
+.card label{display:grid;gap:.3rem;color:#9aa4c7;font-size:.9rem;text-align:left}
+.auth .card input{background:#eaf0ff;color:#111;border-color:#2b3354}
+.auth .primary{width:auto;justify-self:start;padding:.7rem 1.4rem}
+.auth .muted{color:#9aa4c7}

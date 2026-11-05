@@ -1,29 +1,19 @@
 const $ = id => document.getElementById(id);
-const FIELDS = ["email", "password", "code", "newPassword"];
-let mode = "code";   // "code" = email code, "pw" = password login
-let step = "email";  // "email" -> "code" -> "setpw"
-let pendingEmail = "", pendingUser = null;
+let mode = "login"; // login | signup | reset | newpw
+const TITLES = { login: "Log in", signup: "Sign up", reset: "Reset password", newpw: "Set a new password" };
+const BTN = { login: "Log in", signup: "Create account", reset: "Send reset link", newpw: "Save password" };
 
 function view() {
-  const show = { email: false, password: false, code: false, newPassword: false };
-  let btn = "Send code", hint = "";
-  if (step === "email") {
-    show.email = true;
-    if (mode === "pw") { show.password = true; btn = "Log in"; }
-    else hint = "No password needed. We email you a code. New here? An account is created automatically.";
-  } else if (step === "code") {
-    show.code = true; btn = "Verify code"; hint = `We sent a code to ${pendingEmail}.`;
-  } else {
-    show.newPassword = true; btn = "Save password"; hint = "Create a password so you can log in faster next time.";
-  }
-  FIELDS.forEach(f => $(f).hidden = !show[f]);
-  $("authBtn").textContent = btn;
-  $("authHint").textContent = hint;
-  $("seg").hidden = step !== "email";
-  $("backBtn").hidden = step !== "code";
-  $("skipBtn").hidden = step !== "setpw";
-  $("modeCode").classList.toggle("on", mode === "code");
-  $("modePw").classList.toggle("on", mode === "pw");
+  $("authTitle").textContent = TITLES[mode];
+  $("authBtn").textContent = BTN[mode];
+  $("lblEmail").hidden = mode === "newpw";
+  $("lblPw").hidden = mode === "reset";
+  $("lblPw2").hidden = !(mode === "signup" || mode === "newpw");
+  $("tabs").hidden = mode === "newpw";
+  $("tabLogin").classList.toggle("on", mode === "login");
+  $("tabSignup").classList.toggle("on", mode === "signup");
+  $("tabReset").classList.toggle("on", mode === "reset");
+  $("password").autocomplete = mode === "login" ? "current-password" : "new-password";
   $("authMsg").textContent = "";
 }
 
@@ -43,44 +33,42 @@ function openTab(name) {
 
 async function submitAuth() {
   const msg = $("authMsg"); msg.className = "msg";
+  const email = $("email").value.trim(), pw = $("password").value, pw2 = $("password2").value;
   try {
-    if (step === "email") {
-      const email = $("email").value.trim();
-      if (!email.includes("@")) { msg.textContent = "Enter a valid email."; return; }
-      if (mode === "pw") {
-        const pw = $("password").value;
-        if (pw.length < 6) { msg.textContent = "Enter your password (min. 6 characters)."; return; }
-        return showApp(await Auth.signIn(email, pw));
-      }
-      await Auth.sendCode(email);
-      pendingEmail = email; step = "code"; view();
-      $("authMsg").className = "msg ok";
-      $("authMsg").textContent = Auth.demo ? "Demo mode: use code 123456." : "Code sent. Check your inbox (and spam).";
-    } else if (step === "code") {
-      const code = $("code").value.trim();
-      if (!code) { msg.textContent = "Enter the code from your email."; return; }
-      const user = await Auth.verifyCode(pendingEmail, code);
-      if (Auth.hasPassword(user)) return showApp(user);
-      pendingUser = user; step = "setpw"; view();
-    } else {
-      const pw = $("newPassword").value;
-      if (pw.length < 6) { msg.textContent = "Password must be at least 6 characters."; return; }
-      showApp(await Auth.setPassword(pw));
+    if (mode !== "newpw" && !email.includes("@")) { msg.textContent = "Enter a valid email."; return; }
+    if (mode === "reset") {
+      await Auth.resetPassword(email);
+      msg.className = "msg ok"; msg.textContent = "If this email has an account, a reset link is on its way.";
+      return;
     }
+    if (pw.length < 6) { msg.textContent = "Password must be at least 6 characters."; return; }
+    if ((mode === "signup" || mode === "newpw") && pw !== pw2) { msg.textContent = "Passwords do not match."; return; }
+    if (mode === "login") return showApp(await Auth.signIn(email, pw));
+    if (mode === "signup") {
+      const u = await Auth.signUp(email, pw);
+      if (!u) { msg.className = "msg ok"; msg.textContent = "Account created. Check your email to confirm it, then log in."; return; }
+      return showApp(u);
+    }
+    const u = await Auth.updatePassword(pw);
+    history.replaceState(null, "", location.pathname);
+    showApp(u);
   } catch (e) { msg.textContent = e.message || "Something went wrong"; }
 }
 
 (async function main() {
   $("demoNote").hidden = !Auth.demo;
-  $("modeCode").onclick = () => { mode = "code"; view(); };
-  $("modePw").onclick = () => { mode = "pw"; view(); };
+  $("tabLogin").onclick = () => { mode = "login"; view(); };
+  $("tabSignup").onclick = () => { mode = "signup"; view(); };
+  $("tabReset").onclick = () => { mode = "reset"; view(); };
   $("authBtn").onclick = submitAuth;
-  $("backBtn").onclick = () => { step = "email"; view(); };
-  $("skipBtn").onclick = () => showApp(pendingUser);
-  FIELDS.forEach(f => $(f).addEventListener("keydown", e => e.key === "Enter" && submitAuth()));
+  ["email", "password", "password2"].forEach(f => $(f).addEventListener("keydown", e => e.key === "Enter" && submitAuth()));
   $("logout").onclick = async () => { await Auth.signOut(); location.reload(); };
   document.querySelectorAll(".top nav button").forEach(b => b.onclick = () => openTab(b.dataset.tab));
+
+  const h = new URLSearchParams(location.hash.slice(1));
+  const recovering = h.get("type") === "recovery";
+  if (recovering) mode = "newpw";
   view();
-  const user = await Auth.user();
-  if (user) showApp(user);
+  if (h.get("error_description")) $("authMsg").textContent = h.get("error_description").replace(/\+/g, " ");
+  if (!recovering) { const user = await Auth.user(); if (user) showApp(user); }
 })();
