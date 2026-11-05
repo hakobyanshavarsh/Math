@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MathVision: see double integrals</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="auth" class="auth">
+  <div class="card">
+    <h1>Math<span>Vision</span></h1>
+    <p class="muted">See the math, not just the formulas.</p>
+    <div class="seg">
+      <button id="modeLogin" class="on">Log in</button>
+      <button id="modeSignup">Sign up</button>
+    </div>
+    <input id="email" type="email" placeholder="Email" autocomplete="email">
+    <input id="password" type="password" placeholder="Password (min. 6 characters)" autocomplete="current-password">
+    <button id="authBtn" class="primary">Log in</button>
+    <p id="authMsg" class="msg"></p>
+    <p id="demoNote" class="muted small" hidden>Demo mode: Supabase is not connected yet, data is stored in your browser.</p>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <b class="logo">Math<span>Vision</span></b>
+    <nav>
+      <button data-tab="theory" class="on">Theory</button>
+      <button data-tab="viz">Visualizer</button>
+      <button data-tab="ex">Exercises</button>
+      <button data-tab="prog">Progress</button>
+    </nav>
+    <span id="userEmail" class="muted small"></span>
+    <button id="logout" class="ghost">Log out</button>
+  </header>
+
+  <main>
+    <section id="tab-theory" class="tab">
+      <h2>Double integrals</h2>
+      <p>The double integral <code>∬<sub>D</sub> f(x,y) dA</code> equals the <b>volume</b> under the surface <code>z = f(x,y)</code> and above the region <code>D</code>.</p>
+      <h3>How to compute it</h3>
+      <p>Slice the region. Cutting along <code>x = const</code> gives a cross-section area <code>A(x) = ∫ f(x,y) dy</code>, and the volume is the sum of all those areas:</p>
+      <p class="formula">∬<sub>D</sub> f dA = ∫<sub>a</sub><sup>b</sup> ( ∫<sub>g₁(x)</sub><sup>g₂(x)</sup> f(x,y) dy ) dx</p>
+      <h3>Setting the limits</h3>
+      <ol>
+        <li>Sketch the region D in the <code>xy</code>-plane.</li>
+        <li>Choose the order (dy dx or dx dy), which is the direction you slice.</li>
+        <li>The outer limits are numbers. The inner limits depend on the outer variable.</li>
+        <li>Find the inner limits by seeing where the slicing line enters and leaves the region.</li>
+      </ol>
+      <p>Open the <b>Visualizer</b> and move the slice to watch the volume build up.</p>
+    </section>
+
+    <section id="tab-viz" class="tab" hidden>
+      <div class="vizgrid">
+        <div class="panel controls">
+          <label>f(x, y) <input id="f" value="x + y"></label>
+          <div class="row">
+            <label>x from <input id="a" value="0"></label>
+            <label>x to <input id="b" value="1"></label>
+          </div>
+          <label>y lower bound g₁(x) <input id="g1" value="x^2"></label>
+          <label>y upper bound g₂(x) <input id="g2" value="x"></label>
+          <label>Order of integration
+            <select id="order">
+              <option value="dydx">dy dx (slice x = const)</option>
+              <option value="dxdy">dx dy (slice y = const)</option>
+            </select>
+          </label>
+          <label>Slice position <input id="t" type="range" min="0" max="1" step="0.01" value="0.5"></label>
+          <button id="draw" class="primary">Draw</button>
+          <div id="result" class="result"></div>
+          <p class="muted small">Try: <code>x^2+y^2</code>, <code>sin(x)*cos(y)</code>, <code>sqrt(x)</code>, <code>pi</code></p>
+        </div>
+        <div class="panel"><div id="plot3d" class="plot"></div></div>
+        <div class="panel"><div id="plot2d" class="plot small-plot"></div></div>
+      </div>
+    </section>
+
+    <section id="tab-ex" class="tab" hidden>
+      <h2>Exercises</h2>
+      <div id="exList"></div>
+    </section>
+
+    <section id="tab-prog" class="tab" hidden>
+      <h2>My progress</h2>
+      <div id="progBar" class="bar"><div></div></div>
+      <p id="progText"></p>
+      <div id="progList"></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.35.2/plotly.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.2/math.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<script src="visualizer.js"></script>
+<script src="exercises.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
