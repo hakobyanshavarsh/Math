@@ -28,6 +28,32 @@ const Auth = {
     if (this.sb) await this.sb.auth.signOut(); else localStorage.removeItem("mv_user");
   },
 
+  async sendCode(email) {
+    if (this.sb) {
+      const { error } = await this.sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+      if (error) throw error;
+    }
+  },
+  async verifyCode(email, token) {
+    if (this.sb) {
+      const { data, error } = await this.sb.auth.verifyOtp({ email, token, type: "email" });
+      if (error) throw error;
+      return data.user;
+    }
+    if (token !== "123456") throw new Error("Demo mode: use code 123456");
+    const u = { id: email, email }; localStorage.setItem("mv_user", JSON.stringify(u)); return u;
+  },
+  hasPassword(u) { return !!((u.user_metadata && u.user_metadata.has_password) || u.has_password); },
+  async setPassword(password) {
+    if (this.sb) {
+      const { data, error } = await this.sb.auth.updateUser({ password, data: { has_password: true } });
+      if (error) throw error;
+      return data.user;
+    }
+    const u = JSON.parse(localStorage.getItem("mv_user")); u.has_password = true;
+    localStorage.setItem("mv_user", JSON.stringify(u)); return u;
+  },
+
   async saveProgress(user, exerciseId, correct) {
     if (this.sb) {
       const { data } = await this.sb.from("progress").select("attempts,correct").eq("exercise_id", exerciseId).maybeSingle();

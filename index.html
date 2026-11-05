@@ -12,13 +12,18 @@
   <div class="card">
     <h1>Math<span>Vision</span></h1>
     <p class="muted">See the math, not just the formulas.</p>
-    <div class="seg">
-      <button id="modeLogin" class="on">Log in</button>
-      <button id="modeSignup">Sign up</button>
+    <div class="seg" id="seg">
+      <button id="modeCode" class="on">Email code</button>
+      <button id="modePw">Password</button>
     </div>
+    <p id="authHint" class="muted small"></p>
     <input id="email" type="email" placeholder="Email" autocomplete="email">
-    <input id="password" type="password" placeholder="Password (min. 6 characters)" autocomplete="current-password">
-    <button id="authBtn" class="primary">Log in</button>
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password" hidden>
+    <input id="code" inputmode="numeric" maxlength="10" placeholder="Code from your email" autocomplete="one-time-code" hidden>
+    <input id="newPassword" type="password" placeholder="Create a password (min. 6 characters)" autocomplete="new-password" hidden>
+    <button id="authBtn" class="primary">Send code</button>
+    <button id="skipBtn" class="ghost" hidden>Skip for now</button>
+    <button id="backBtn" class="ghost" hidden>Use a different email</button>
     <p id="authMsg" class="msg"></p>
     <p id="demoNote" class="muted small" hidden>Demo mode: Supabase is not connected yet, data is stored in your browser.</p>
   </div>
@@ -95,6 +100,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script>window.Plotly||document.write('<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"><\/script>')</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.2/math.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
